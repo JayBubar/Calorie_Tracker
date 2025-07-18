@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie & Macro Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+
+        .calories-display {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .calorie-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .calorie-item:last-child {
+            border-bottom: none;
+        }
+
+        .calorie-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .calorie-value {
+            font-weight: 600;
+            color: #4facfe;
+            font-size: 16px;
+        }
+
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .macro-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .macro-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .macro-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .food-entry {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .food-info {
+            flex: 1;
+        }
+
+        .food-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .food-details {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.3s ease;
+        }
+
+        .help-btn {
+            background: #28a745;
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍎 Calorie Tracker</h1>
+            <p>Track your nutrition & reach your goals</p>
+        </div>
+        
+        <div class="content">
+            <!-- Profile Section -->
+            <div class="section">
+                <h2>👤 Your Profile</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="age" placeholder="25">
+                    </div>
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <select id="sex">
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Height (inches)</label>
+                        <input type="number" id="height" placeholder="70">
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (lbs)</label>
+                        <input type="number" id="weight" placeholder="150">
+                    </div>
+                </div>
+                <button class="btn" onclick="calculateBMR()">Calculate BMR & Goals</button>
+            </div>
+
+            <!-- Calorie Goals -->
+            <div class="section">
+                <h2>🎯 Daily Calorie Goals</h2>
+                <div class="calories-display" id="calorieGoals">
+                    <p style="text-align: center; color: #666;">Enter your profile info to see calorie goals</p>
+                </div>
+            </div>
+
+            <!-- Food Tracking -->
+            <div class="section">
+                <h2>🍽️ Food Tracking</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Food Name</label>
+                        <input type="text" id="foodName" placeholder="Chicken breast">
+                    </div>
+                    <div class="form-group">
+                        <label>Calories</label>
+                        <input type="number" id="foodCalories" placeholder="200">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Protein (g)</label>
+                        <input type="number" id="foodProtein" placeholder="25">
+                    </div>
+                    <div class="form-group">
+                        <label>Carbs (g)</label>
+                        <input type="number" id="foodCarbs" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fat (g)</label>
+                        <input type="number" id="foodFat" placeholder="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Fiber (g)</label>
+                        <input type="number" id="foodFiber" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Sugar (g)</label>
+                        <input type="number" id="foodSugar" placeholder="0">
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn" onclick="addFood()">Add Food</button>
+                    <button class="btn help-btn" onclick="askForHelp()">Need Help?</button>
+                </div>
+            </div>
+
+            <!-- Daily Summary -->
+            <div class="section">
+                <h2>📊 Today's Summary</h2>
+                <div class="calories-display">
+                    <div class="calorie-item">
+                        <span class="calorie-label">Calories Consumed</span>
+                        <span class="calorie-value" id="totalCalories">0</span>
+                    </div>
+                    <div class="calorie-item">
+                        <span class="calorie-label">Remaining for Goal</span>
+                        <span class="calorie-value" id="remainingCalories">-</span>
+                    </div>
+                </div>
+                
+                <div class="macro-grid">
+                    <div class="macro-item">
+                        <div class="macro-label">Protein</div>
+                        <div class="macro-value" id="totalProtein">0g</div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-label">Carbs</div>
+                        <div class="macro-value" id="totalCarbs">0g</div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-label">Fat</div>
+                        <div class="macro-value" id="totalFat">0g</div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-label">Fiber</div>
+                        <div class="macro-value" id="totalFiber">0g</div>
+                    </div>
+                    <div class="macro-item">
+                        <div class="macro-label">Sugar</div>
+                        <div class="macro-value" id="totalSugar">0g</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise Tracking -->
+            <div class="section">
+                <h2>🏃‍♀️ Exercise Tracking</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Activity</label>
+                        <input type="text" id="exerciseName" placeholder="Running">
+                    </div>
+                    <div class="form-group">
+                        <label>Calories Burned</label>
+                        <input type="number" id="exerciseCalories" placeholder="300">
+                    </div>
+                </div>
+                <button class="btn" onclick="addExercise()">Add Exercise</button>
+                <div class="calories-display">
+                    <div class="calorie-item">
+                        <span class="calorie-label">Exercise Calories Burned</span>
+                        <span class="calorie-value" id="totalExercise">0</span>
+                    </div>
+                    <div class="calorie-item">
+                        <span class="calorie-label">Net Calories</span>
+                        <span class="calorie-value" id="netCalories">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Log -->
+            <div class="section">
+                <h2>📝 Today's Food Log</h2>
+                <div id="foodLog">
+                    <p style="text-align: center; color: #666;">No foods logged today</p>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="exportData()" style="flex: 1;">📊 Export to CSV</button>
+                    <button class="btn btn-danger" onclick="clearDay()" style="flex: 1;">Clear Today's Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data storage
+        let dailyData = {
+            foods: [],
+            exercises: [],
+            date: new Date().toDateString()
+        };
+
+        let userProfile = {};
+        let calorieGoals = {};
+
+        // Load saved data
+        function loadData() {
+            const saved = localStorage.getItem('calorieTrackerData');
+            const savedProfile = localStorage.getItem('calorieTrackerProfile');
+            
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.date === new Date().toDateString()) {
+                    dailyData = data;
+                } else {
+                    // New day, reset data
+                    dailyData = {
+                        foods: [],
+                        exercises: [],
+                        date: new Date().toDateString()
+                    };
+                }
+            }
+            
+            if (savedProfile) {
+                userProfile = JSON.parse(savedProfile);
+                document.getElementById('age').value = userProfile.age || '';
+                document.getElementById('sex').value = userProfile.sex || '';
+                document.getElementById('height').value = userProfile.height || '';
+                document.getElementById('weight').value = userProfile.weight || '';
+                
+                if (userProfile.age && userProfile.sex && userProfile.height && userProfile.weight) {
+                    calculateBMR();
+                }
+            }
+            
+            updateDisplay();
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('calorieTrackerData', JSON.stringify(dailyData));
+            localStorage.setItem('calorieTrackerProfile', JSON.stringify(userProfile));
+        }
+
+        // Calculate BMR and calorie goals
+        function calculateBMR() {
+            const age = parseInt(document.getElementById('age').value);
+            const sex = document.getElementById('sex').value;
+            const height = parseInt(document.getElementById('height').value);
+            const weight = parseInt(document.getElementById('weight').value);
+
+            if (!age || !sex || !height || !weight) {
+                alert('Please fill in all profile fields');
+                return;
+            }
+
+            userProfile = { age, sex, height, weight };
+
+            // Mifflin-St Jeor Equation (corrected for imperial units)
+            // Convert height from inches to cm and weight from lbs to kg
+            const heightCm = height * 2.54;
+            const weightKg = weight * 0.453592;
+            
+            let bmr;
+            if (sex === 'male') {
+                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+            }
+
+            // Assume sedentary activity level (1.2) for base calculation
+            const tdee = bmr * 1.2;
+
+            calorieGoals = {
+                maintenance: Math.round(tdee),
+                lose1lb: Math.round(tdee - 500),
+                lose1_5lb: Math.round(tdee - 750),
+                lose2lb: Math.round(tdee - 1000),
+                bmr: Math.round(bmr)
+            };
+
+            displayCalorieGoals();
+            updateDisplay(); // This will also update remaining calories
+            saveData();
+        }
+
+        // Display calorie goals
+        function displayCalorieGoals() {
+            const goalsDiv = document.getElementById('calorieGoals');
+            goalsDiv.innerHTML = `
+                <div class="calorie-item">
+                    <span class="calorie-label">BMR (Resting Calories)</span>
+                    <span class="calorie-value">${calorieGoals.bmr}</span>
+                </div>
+                <div class="calorie-item">
+                    <span class="calorie-label">Maintenance Calories</span>
+                    <span class="calorie-value">${calorieGoals.maintenance}</span>
+                </div>
+                <div class="calorie-item">
+                    <span class="calorie-label">Lose 1 lb/week</span>
+                    <span class="calorie-value">${calorieGoals.lose1lb}</span>
+                </div>
+                <div class="calorie-item">
+                    <span class="calorie-label">Lose 1.5 lbs/week</span>
+                    <span class="calorie-value">${calorieGoals.lose1_5lb}</span>
+                </div>
+                <div class="calorie-item">
+                    <span class="calorie-label">Lose 2 lbs/week</span>
+                    <span class="calorie-value">${calorieGoals.lose2lb}</span>
+                </div>
+            `;
+        }
+
+        // Add food
+        function addFood() {
+            const name = document.getElementById('foodName').value;
+            const calories = parseInt(document.getElementById('foodCalories').value) || 0;
+            const protein = parseInt(document.getElementById('foodProtein').value) || 0;
+            const carbs = parseInt(document.getElementById('foodCarbs').value) || 0;
+            const fat = parseInt(document.getElementById('foodFat').value) || 0;
+            const fiber = parseInt(document.getElementById('foodFiber').value) || 0;
+            const sugar = parseInt(document.getElementById('foodSugar').value) || 0;
+
+            if (!name || calories <= 0) {
+                alert('Please enter a food name and calories');
+                return;
+            }
+
+            const food = { name, calories, protein, carbs, fat, fiber, sugar, time: new Date().toLocaleTimeString() };
+            dailyData.foods.push(food);
+
+            // Clear form
+            document.getElementById('foodName').value = '';
+            document.getElementById('foodCalories').value = '';
+            document.getElementById('foodProtein').value = '';
+            document.getElementById('foodCarbs').value = '';
+            document.getElementById('foodFat').value = '';
+            document.getElementById('foodFiber').value = '';
+            document.getElementById('foodSugar').value = '';
+
+            updateDisplay();
+            saveData();
+        }
+
+        // Add exercise
+        function addExercise() {
+            const name = document.getElementById('exerciseName').value;
+            const calories = parseInt(document.getElementById('exerciseCalories').value) || 0;
+
+            if (!name || calories <= 0) {
+                alert('Please enter an activity name and calories burned');
+                return;
+            }
+
+            const exercise = { name, calories, time: new Date().toLocaleTimeString() };
+            dailyData.exercises.push(exercise);
+
+            // Clear form
+            document.getElementById('exerciseName').value = '';
+            document.getElementById('exerciseCalories').value = '';
+
+            updateDisplay();
+            saveData();
+        }
+
+        // Update display
+        function updateDisplay() {
+            const totalCalories = dailyData.foods.reduce((sum, food) => sum + food.calories, 0);
+            const totalProtein = dailyData.foods.reduce((sum, food) => sum + food.protein, 0);
+            const totalCarbs = dailyData.foods.reduce((sum, food) => sum + food.carbs, 0);
+            const totalFat = dailyData.foods.reduce((sum, food) => sum + food.fat, 0);
+            const totalFiber = dailyData.foods.reduce((sum, food) => sum + food.fiber, 0);
+            const totalSugar = dailyData.foods.reduce((sum, food) => sum + food.sugar, 0);
+            const totalExercise = dailyData.exercises.reduce((sum, ex) => sum + ex.calories, 0);
+
+            document.getElementById('totalCalories').textContent = totalCalories;
+            document.getElementById('totalProtein').textContent = totalProtein + 'g';
+            document.getElementById('totalCarbs').textContent = totalCarbs + 'g';
+            document.getElementById('totalFat').textContent = totalFat + 'g';
+            document.getElementById('totalFiber').textContent = totalFiber + 'g';
+            document.getElementById('totalSugar').textContent = totalSugar + 'g';
+            document.getElementById('totalExercise').textContent = totalExercise;
+            document.getElementById('netCalories').textContent = totalCalories - totalExercise;
+
+            // Calculate remaining calories
+            if (calorieGoals.lose1lb) {
+                const remaining = calorieGoals.lose1lb - totalCalories + totalExercise;
+                document.getElementById('remainingCalories').textContent = remaining;
+            }
+
+            // Update food log
+            const foodLogDiv = document.getElementById('foodLog');
+            if (dailyData.foods.length === 0) {
+                foodLogDiv.innerHTML = '<p style="text-align: center; color: #666;">No foods logged today</p>';
+            } else {
+                foodLogDiv.innerHTML = dailyData.foods.map(food => `
+                    <div class="food-entry">
+                        <div class="food-info">
+                            <div class="food-name">${food.name}</div>
+                            <div class="food-details">${food.calories} cal • P:${food.protein}g C:${food.carbs}g F:${food.fat}g • ${food.time}</div>
+                        </div>
+                        <button class="btn btn-danger" onclick="removeFood('${food.name}', '${food.time}')" style="padding: 5px 10px; font-size: 12px;">×</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Remove food
+        function removeFood(name, time) {
+            dailyData.foods = dailyData.foods.filter(food => !(food.name === name && food.time === time));
+            updateDisplay();
+            saveData();
+        }
+
+        // Clear day
+        function clearDay() {
+            if (confirm('Are you sure you want to clear all today\'s data?')) {
+                dailyData = {
+                    foods: [],
+                    exercises: [],
+                    date: new Date().toDateString()
+                };
+                updateDisplay();
+                saveData();
+            }
+        }
+
+        // Export data to CSV
+        function exportData() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            
+            // Create CSV content
+            let csvContent = "Date,Type,Name,Calories,Protein,Carbs,Fat,Fiber,Sugar,Time\n";
+            
+            // Add food entries
+            dailyData.foods.forEach(food => {
+                csvContent += `${today},Food,"${food.name}",${food.calories},${food.protein},${food.carbs},${food.fat},${food.fiber},${food.sugar},"${food.time}"\n`;
+            });
+            
+            // Add exercise entries
+            dailyData.exercises.forEach(exercise => {
+                csvContent += `${today},Exercise,"${exercise.name}",${exercise.calories},0,0,0,0,0,"${exercise.time}"\n`;
+            });
+            
+            // Add daily summary
+            const totalCalories = dailyData.foods.reduce((sum, food) => sum + food.calories, 0);
+            const totalProtein = dailyData.foods.reduce((sum, food) => sum + food.protein, 0);
+            const totalCarbs = dailyData.foods.reduce((sum, food) => sum + food.carbs, 0);
+            const totalFat = dailyData.foods.reduce((sum, food) => sum + food.fat, 0);
+            const totalFiber = dailyData.foods.reduce((sum, food) => sum + food.fiber, 0);
+            const totalSugar = dailyData.foods.reduce((sum, food) => sum + food.sugar, 0);
+            const totalExercise = dailyData.exercises.reduce((sum, ex) => sum + ex.calories, 0);
+            
+            csvContent += `${today},Summary,"Daily Totals",${totalCalories},${totalProtein},${totalCarbs},${totalFat},${totalFiber},${totalSugar},"Summary"\n`;
+            csvContent += `${today},Summary,"Exercise Burned",-${totalExercise},0,0,0,0,0,"Summary"\n`;
+            csvContent += `${today},Summary,"Net Calories",${totalCalories - totalExercise},0,0,0,0,0,"Summary"\n`;
+            
+            // Add profile info if available
+            if (userProfile.age) {
+                csvContent += `${today},Profile,"BMR",${calorieGoals.bmr || 0},0,0,0,0,0,"${userProfile.age}y ${userProfile.sex} ${userProfile.height}in ${userProfile.weight}lbs"\n`;
+                csvContent += `${today},Profile,"Weight",${userProfile.weight},0,0,0,0,0,"Profile"\n`;
+            }
+            
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `calorie-tracker-${today}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            alert('📊 Data exported! You can now open the CSV file and copy the data into your Google Sheet.');
+        }
+
+        // Ask for help
+        function askForHelp() {
+            alert('💡 Need help with nutrition info?\n\n• Use nutrition labels on packaging\n• Search online for "[food name] nutrition facts"\n• Common portions: 1 cup, 1 medium, 3 oz, etc.\n• Apps like MyFitnessPal have food databases\n• When in doubt, overestimate calories slightly\n\nTip: Focus on getting calories right first, then worry about precise macros!');
+        }
+
+        // Load data when page loads
+        loadData();
+    </script>
+</body>
+</html>
